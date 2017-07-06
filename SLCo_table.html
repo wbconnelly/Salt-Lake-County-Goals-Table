@@ -1,7 +1,9 @@
 <html>
 <head>
 </head>
-
+<style>
+select {font-size: 14px;}
+</style>
 
 </script>
 <body>
@@ -114,7 +116,7 @@ console.log(outcomes[0].indicators_list);
 
 			indicators_table.addRows(
 				[[
-				ind_list[i].for_outcome, ind_list[i].action, ind_list[i].description_of_what_you_are_measuring, ind_list[i].how_is_this_indicator_measured, ind_list[i].units, ind_list[i].current, ind_list[i].target, ind_list[i].datestart, ind_list[i].dateend, ind_list[i].how_are_we_doing, ind_list[i].what_factors_positively_and_negatively_affect_this_indicator, ind_list[i].why_is_this_indicator_important, ind_list[i].where_to_learn_more
+				ind_list[i].for_outcome, ind_list[i].action, ind_list[i].description_of_what_you_are_measuring, ind_list[i].how_is_this_indicator_measured, ind_list[i].units, ind_list[i].current, ind_list[i].target, ind_list[i].datestart.replace("T00:00:00.000",""), ind_list[i].dateend.replace("T00:00:00.000",""), ind_list[i].how_are_we_doing, ind_list[i].what_factors_positively_and_negatively_affect_this_indicator, ind_list[i].why_is_this_indicator_important, ind_list[i].where_to_learn_more
 				]])
 		}
 	}
