@@ -1,0 +1,136 @@
+<html>
+<head>
+</head>
+
+
+</script>
+<body>
+
+<select onchange="create_table()" id="select_id">
+  <option value=""> SELECT AN ORGANIZATION TO EXPLORE INDICATORS</option>
+  <option value="10150000 OFFICE OF TOWNSHIP SERVICES">OFFICE OF TOWNSHIP SERVICES</option>
+  <option value="10160000 REDEVELOPMENT AGENCY OF SL CO">REDEVELOPMENT AGENCY OF SL CO</option>
+  <option value="40500000 PLANNING AND DEVELOPMENT SERVICES">PLANNING AND DEVELOPMENT SERVICES</option>
+  <option value="45000000 PUBLIC WORKS ENGINEERING">45000000 PUBLIC WORKS ENGINEERING</option>
+  <option value="61000000 CONTRACTS AND PROCUREMENT">CONTRACTS AND PROCUREMENT</option>
+  <opiton value="68000000 FLEET MANAGEMENT">FLEET MANAGEMENT</opiton>
+</select>
+
+<br>
+<br>
+<div id="table_outcomes"></div>
+<br>
+<br>
+<div id = "table_indicators"></div>
+
+</body>
+</html>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+
+
+
+function create_table() {
+
+google.charts.load('current', {'packages':['table']});
+google.charts.setOnLoadCallback(drawTable);
+
+var org = document.getElementById("select_id").value;
+console.log(org);
+
+outcomes_url = "https://bc-rally-opr.demo.socrata.com/resource/gxji-inpn.json?organization=" + org
+console.log(outcomes_url);
+
+var xhr = new XMLHttpRequest();
+xhr.open("GET", outcomes_url, false);
+xhr.send();
+var outcomes = JSON.parse(xhr.responseText);
+
+var xhr2 = new XMLHttpRequest();
+xhr2.open("GET", "https://bc-rally-opr.demo.socrata.com/resource/sesv-dzgd.json", false);
+xhr2.send();
+var indicators = JSON.parse(xhr2.responseText);
+
+
+for (i in outcomes){
+	
+	var outcome_id = outcomes[i].outcome_id
+	var outcome_indicators = []
+
+	for (n in indicators) {
+
+		if ( outcome_id == indicators[n].for_outcome) {
+
+			outcome_indicators.push(indicators[n]);
+		}
+		outcomes[i]['indicators_list'] = outcome_indicators
+
+	}
+}
+
+
+function drawTable () {
+
+console.log(outcomes)
+
+var outcomes_table = new google.visualization.DataTable();
+        outcomes_table.addColumn('string', 'Outcome ID');
+        outcomes_table.addColumn('string', 'Organization');
+        outcomes_table.addColumn('string', 'Outcome Ddescription');
+        outcomes_table.addColumn('string', 'Future We Choose Pillar');
+        
+        for (n in outcomes) {
+        outcomes_table.addRows([
+          [
+          outcomes[n].outcome_id, outcomes[n].outcome_id, outcomes[n].outcome, outcomes[n].future_we_choose_pillar
+          ]
+        ]);
+
+        }
+
+
+var indicators_table = new google.visualization.DataTable();
+        indicators_table.addColumn('string', 'For Outcome');
+        indicators_table.addColumn('string', 'Action');
+        indicators_table.addColumn('string', 'Indicator Description');
+        indicators_table.addColumn('string', 'How is this indicator Measured?');
+        indicators_table.addColumn('string', 'Units');
+        indicators_table.addColumn('string', 'Current');
+        indicators_table.addColumn('string', 'Target');
+        indicators_table.addColumn('string', 'From');
+        indicators_table.addColumn('string', 'To');
+        indicators_table.addColumn('string', 'How Are We Doing?');
+        indicators_table.addColumn('string', 'What Factors Affect this Indicator?');
+        indicators_table.addColumn('string', 'Why is this indicator Important?');
+        indicators_table.addColumn('string', 'Where to learn more.');
+
+console.log(outcomes[0].indicators_list);
+
+	for (n in outcomes) {
+
+		var ind_list = outcomes[n].indicators_list
+
+		for (i in ind_list) {
+
+			indicators_table.addRows(
+				[[
+				ind_list[i].for_outcome, ind_list[i].action, ind_list[i].description_of_what_you_are_measuring, ind_list[i].how_is_this_indicator_measured, ind_list[i].units, ind_list[i].current, ind_list[i].target, ind_list[i].datestart, ind_list[i].dateend, ind_list[i].how_are_we_doing, ind_list[i].what_factors_positively_and_negatively_affect_this_indicator, ind_list[i].why_is_this_indicator_important, ind_list[i].where_to_learn_more
+				]])
+		}
+	}
+
+var table = new google.visualization.Table(document.getElementById('table_outcomes'));
+
+table.draw(outcomes_table);
+
+var table = new google.visualization.Table(document.getElementById('table_indicators'));
+
+table.draw(indicators_table);
+
+
+
+}
+
+}
+
+</script>
